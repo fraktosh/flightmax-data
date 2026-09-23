@@ -3,240 +3,556 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FlightMax Fare Lab</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FF9EC4">
+<title>Kitty Flight Diary</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=M+PLUS+Rounded+1c:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #f6f7f9; --panel: #ffffff; --text: #14171c; --muted: #636b78; --line: #e3e6eb;
-    --accent: #2563eb; --good: #15803d; --warn: #b45309; --bad: #b91c1c;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0e1116; --panel: #161a21; --text: #e7eaf0; --muted: #929aa8; --line: #262c36;
-      --accent: #60a5fa; --good: #4ade80; --warn: #fbbf24; --bad: #f87171;
-    }
+    --bow: #E4003A;
+    --bubblegum: #FF9EC4;
+    --blush: #FFE3EE;
+    --milk: #FFF9FB;
+    --ink: #4A2437;
+    --ink-soft: #8A5A70;
+    --sky: #A8DDF2;
+    --sun: #FFD84D;
+    --stitch: #FFB8D2;
+    --display: "Mochiy Pop One", "M PLUS Rounded 1c", system-ui, sans-serif;
+    --body: "M PLUS Rounded 1c", system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 1040px; margin: 0 auto; padding: 16px; }
-  h1 { font-size: 20px; margin: 4px 0 2px; }
-  h2 { font-size: 16px; margin: 0 0 10px; }
-  .sub { color: var(--muted); font-size: 13px; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 14px; }
-  .health { font-weight: 600; font-size: 16px; }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
-  .tile { border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
-  .tile b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
-  .tile span { color: var(--muted); font-size: 12px; }
-  input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 15px; }
-  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  th { color: var(--muted); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
-  td.num, th.num { text-align: right; }
-  tbody tr { cursor: pointer; }
-  tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
-  .scroll { overflow-x: auto; }
-  .up { color: var(--bad); } .down { color: var(--good); }
-  .charts { display: grid; grid-template-columns: 1fr; gap: 14px; }
-  @media (min-width: 760px) { .charts { grid-template-columns: 1fr 1fr; } .charts .wide { grid-column: 1 / -1; } }
-  .chart { position: relative; height: 220px; }
-  .kv { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 6px 0 12px; }
-  .kv div span { color: var(--muted); font-size: 12px; display: block; }
-  .kv div b { font-size: 17px; }
-  button.link { background: none; border: 0; color: var(--accent); padding: 0; font: inherit; cursor: pointer; }
-  .hidden { display: none; }
-  .more { text-align: center; margin-top: 10px; }
+  html { background: var(--milk); }
+  body {
+    margin: 0; color: var(--ink); font: 500 16px/1.55 var(--body);
+    background-color: var(--milk);
+    background-image: radial-gradient(var(--blush) 22%, transparent 23%), radial-gradient(var(--blush) 22%, transparent 23%);
+    background-size: 36px 36px; background-position: 0 0, 18px 18px;
+  }
+  button, input { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px dashed var(--bow); outline-offset: 3px; border-radius: 12px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- hero: the one loud thing ---------- */
+  .sky {
+    position: relative; overflow: hidden; padding: 18px 0 34px;
+    background: linear-gradient(#BFE8F7, var(--sky) 70%, #CDEFFA);
+    border-bottom: 6px solid #fff;
+    box-shadow: 0 6px 0 var(--stitch);
+  }
+  .cloud { position: absolute; background: #fff; border-radius: 99px; opacity: .95; }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+  .cloud.c1 { width: 120px; height: 34px; top: 58px; left: 6%; }
+  .cloud.c1::before { width: 54px; height: 54px; top: -26px; left: 18px; }
+  .cloud.c1::after { width: 40px; height: 40px; top: -16px; left: 62px; }
+  .cloud.c2 { width: 90px; height: 26px; top: 150px; right: 8%; }
+  .cloud.c2::before { width: 40px; height: 40px; top: -20px; left: 14px; }
+  .cloud.c2::after { width: 30px; height: 30px; top: -12px; left: 46px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+  .brand { font: 400 20px/1 var(--display); color: #fff; text-shadow: 0 2px 0 var(--bubblegum), 2px 0 0 var(--bubblegum), -2px 0 0 var(--bubblegum), 0 -2px 0 var(--bubblegum); letter-spacing: .5px; }
+  .lock {
+    display: inline-flex; align-items: center; gap: 6px; border: 3px solid #fff; background: var(--bow); color: #fff;
+    border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 800; font-size: 14px;
+    box-shadow: 0 3px 0 #A8002B; white-space: nowrap;
+  }
+  .lock:active { transform: translateY(2px); box-shadow: 0 1px 0 #A8002B; }
+  .flight { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(220px, 340px) 1fr; align-items: center; gap: 8px; margin-top: 12px; }
+  .plane { width: 100%; height: auto; animation: bob 3.2s ease-in-out infinite; transform-origin: 50% 60%; }
+  @keyframes bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+  .trail { position: absolute; left: -40px; top: 52%; width: 90px; height: 10px; border-radius: 99px; background: repeating-linear-gradient(90deg, #fff 0 14px, transparent 14px 24px); opacity: .9; }
+  .bubble {
+    position: relative; background: #fff; border-radius: 28px; padding: 18px 22px; max-width: 460px;
+    border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--bubblegum);
+  }
+  .bubble::before {
+    content: ""; position: absolute; left: -18px; top: 42%; width: 26px; height: 26px; background: #fff;
+    border-left: 3px solid var(--ink); border-bottom: 3px solid var(--ink); transform: rotate(45deg) skew(10deg, 10deg);
+  }
+  .bubble h1 { margin: 0; font: 400 clamp(22px, 4.6vw, 34px)/1.2 var(--display); }
+  .bubble h1 .num { color: var(--bow); }
+  .bubble p { margin: 6px 0 0; color: var(--ink-soft); font-weight: 700; }
+  .mood { display: inline-block; margin-top: 10px; padding: 3px 12px; border-radius: 999px; font-weight: 800; font-size: 13px; background: var(--blush); }
+  .mood.ok { background: #DDF6E4; color: #1D6B3A; }
+  .mood.warn { background: #FFF1C2; color: #7A5200; }
+  .mood.bad { background: #FFD6DF; color: var(--bow); }
+  @media (max-width: 640px) {
+    .brand { font-size: 17px; }
+    .flight { grid-template-columns: 1fr; justify-items: center; }
+    .plane { max-width: 260px; }
+    .bubble::before { left: 50%; top: -17px; transform: translateX(-50%) rotate(135deg); }
+    .trail { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .plane { animation: none; } }
+
+  /* ---------- quiet body ---------- */
+  main.wrap { padding: 28px 16px 60px; }
+  .stickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .sticker { background: #fff; border-radius: 22px; padding: 14px 16px; border: 3px dashed var(--stitch); }
+  .sticker b { display: block; font: 400 26px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+  .sticker span { color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+  .ribbon { height: 12px; border-radius: 99px; background: var(--blush); margin-top: 8px; overflow: hidden; }
+  .ribbon i { display: block; height: 100%; border-radius: 99px; background: repeating-linear-gradient(45deg, var(--bow) 0 8px, #F2305F 8px 16px); }
+
+  .card { background: #fff; border-radius: 28px; padding: 18px; margin-top: 18px; border: 3px solid var(--blush); }
+  .card h2 { margin: 0 0 4px; font: 400 21px/1.3 var(--display); }
+  .card .hint { margin: 0 0 12px; color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+  .chart { position: relative; height: 150px; }
+  .chart.tall { height: 230px; }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .search {
+    flex: 1 1 220px; padding: 11px 16px; border-radius: 999px; border: 3px solid var(--stitch); background: var(--milk); font-weight: 700;
+  }
+  .search::placeholder { color: #C08AA2; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 2px solid var(--stitch); background: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: 13px; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--bubblegum); border-color: var(--bubblegum); color: #fff; }
+
+  .tickets { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .ticket {
+    position: relative; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; text-align: left; cursor: pointer;
+    background: var(--milk); border: 2px solid var(--stitch); border-radius: 18px; padding: 12px 16px 12px 18px;
+  }
+  .ticket::before, .ticket::after { content: ""; position: absolute; right: 117px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--stitch); }
+  .ticket::before { top: -9px; clip-path: inset(50% 0 0 0); }
+  .ticket::after { bottom: -9px; clip-path: inset(0 0 50% 0); }
+  .ticket:hover { border-color: var(--bubblegum); background: #fff; }
+  .ticket .route { font: 400 19px/1.2 var(--display); }
+  .ticket .route small { color: var(--bubblegum); font-size: 15px; margin: 0 2px; }
+  .ticket .price { grid-row: span 2; align-self: center; font: 400 22px/1 var(--display); color: var(--bow); padding-left: 16px; border-left: 2px dashed var(--stitch); width: 110px; text-align: right; }
+  .ticket .meta { color: var(--ink-soft); font-size: 13px; font-weight: 700; }
+  .ticket .secret { grid-column: 1 / -1; margin-top: 6px; padding-top: 6px; border-top: 2px dotted var(--stitch); font-size: 13px; font-weight: 800; color: var(--ink); }
+  .more { display: block; margin: 14px auto 0; }
+  .empty { text-align: center; color: var(--ink-soft); font-weight: 700; padding: 20px; }
+
+  .detail-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; flex-wrap: wrap; }
+  .back { border: 0; background: none; color: var(--bow); font-weight: 800; cursor: pointer; padding: 0; }
+  .facts { display: flex; flex-wrap: wrap; gap: 10px 22px; margin: 10px 0 14px; }
+  .facts div span { display: block; color: var(--ink-soft); font-size: 13px; font-weight: 700; }
+  .facts div b { font: 400 20px/1.2 var(--display); }
+  .diary { margin-top: 18px; border-radius: 22px; padding: 16px; background: repeating-linear-gradient(var(--milk) 0 30px, #FFE8F1 30px 32px); border: 3px solid var(--bubblegum); }
+  .diary h3 { margin: 0 0 6px; font: 400 18px/1.3 var(--display); color: var(--bow); }
+  .two { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 720px) { .two { grid-template-columns: 1fr 1fr; } }
+  .hidden { display: none !important; }
+
+  dialog { border: 3px solid var(--ink); border-radius: 28px; padding: 22px; max-width: 340px; width: calc(100% - 32px); box-shadow: 6px 6px 0 var(--bubblegum); color: var(--ink); }
+  dialog::backdrop { background: rgba(255, 158, 196, .45); }
+  dialog h2 { margin: 0 0 4px; font: 400 21px/1.3 var(--display); }
+  dialog p { margin: 0 0 12px; color: var(--ink-soft); font-weight: 700; font-size: 14px; }
+  dialog input { width: 100%; padding: 11px 16px; border-radius: 999px; border: 3px solid var(--stitch); background: var(--milk); font-weight: 700; }
+  dialog .row { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+  .btn { border: 0; border-radius: 999px; padding: 9px 18px; font-weight: 800; cursor: pointer; background: var(--bow); color: #fff; box-shadow: 0 3px 0 #A8002B; }
+  .btn.soft { background: var(--blush); color: var(--ink); box-shadow: 0 3px 0 var(--stitch); }
+  .err { color: var(--bow); font-weight: 800; font-size: 14px; min-height: 1.4em; margin-top: 8px; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; font-weight: 700; padding-bottom: 30px; }
 </style>
 </head>
 <body>
-<main>
-  <h1>✈ FlightMax Fare Lab</h1>
-  <div class="sub" id="updated">Loading…</div>
 
-  <section class="panel">
-    <div class="health" id="health"></div>
-    <div class="tiles" id="tiles"></div>
-    <div class="chart" style="height:120px;margin-top:12px"><canvas id="runsChart"></canvas></div>
+<header class="sky">
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+  <div class="wrap">
+    <div class="topbar">
+      <span class="brand">Kitty Flight Diary</span>
+      <button class="lock" id="lockBtn" type="button">🎀 <span id="lockLabel">Secret diary</span></button>
+    </div>
+    <div class="flight">
+      <div style="position:relative">
+        <span class="trail"></span>
+        <svg class="plane" viewBox="0 0 320 200" role="img" aria-label="A white kitty with a red bow flying a pink plane">
+          <!-- wing behind -->
+          <path d="M150 118 L110 176 Q108 182 116 182 L140 182 L190 122 Z" fill="#FF7FB0" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+          <!-- body -->
+          <path d="M40 112 Q40 88 70 86 L250 84 Q300 86 304 112 Q300 138 250 140 L70 138 Q40 136 40 112 Z" fill="#FF9EC4" stroke="#4A2437" stroke-width="4"/>
+          <!-- tail -->
+          <path d="M52 100 L30 52 Q28 46 36 46 L60 48 L92 88 Z" fill="#FF7FB0" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+          <!-- windows -->
+          <circle cx="110" cy="112" r="8" fill="#fff" stroke="#4A2437" stroke-width="3"/>
+          <circle cx="140" cy="112" r="8" fill="#fff" stroke="#4A2437" stroke-width="3"/>
+          <circle cx="170" cy="112" r="8" fill="#fff" stroke="#4A2437" stroke-width="3"/>
+          <!-- nose -->
+          <path d="M284 96 Q306 104 304 112 Q306 122 284 128 Z" fill="#E4003A" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+          <!-- propeller -->
+          <ellipse cx="308" cy="112" rx="5" ry="30" fill="#FFD84D" stroke="#4A2437" stroke-width="3"/>
+          <!-- kitty in cockpit -->
+          <g transform="translate(228 58)">
+            <path d="M-34 -8 L-40 -44 L-12 -26 Z" fill="#fff" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M34 -8 L40 -44 L12 -26 Z" fill="#fff" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+            <ellipse cx="0" cy="4" rx="46" ry="36" fill="#fff" stroke="#4A2437" stroke-width="4"/>
+            <ellipse cx="-16" cy="4" rx="4.5" ry="6.5" fill="#4A2437"/>
+            <ellipse cx="16" cy="4" rx="4.5" ry="6.5" fill="#4A2437"/>
+            <ellipse cx="0" cy="14" rx="6" ry="4.5" fill="#FFD84D" stroke="#4A2437" stroke-width="2.5"/>
+            <path d="M-4 22 Q-2 26 0 22 Q2 26 4 22" fill="none" stroke="#4A2437" stroke-width="2.5" stroke-linecap="round"/>
+            <g stroke="#4A2437" stroke-width="3" stroke-linecap="round">
+              <path d="M-30 10 L-52 6"/><path d="M-30 16 L-52 18"/><path d="M-30 22 L-50 30"/>
+              <path d="M30 10 L52 6"/><path d="M30 16 L52 18"/><path d="M30 22 L50 30"/>
+            </g>
+            <ellipse cx="-26" cy="14" rx="7" ry="4" fill="#FFB8D2"/>
+            <ellipse cx="26" cy="14" rx="7" ry="4" fill="#FFB8D2"/>
+            <!-- bow -->
+            <g transform="translate(28 -30) rotate(18)">
+              <path d="M0 0 Q-26 -22 -30 0 Q-26 22 0 0 Z" fill="#E4003A" stroke="#4A2437" stroke-width="3.5" stroke-linejoin="round"/>
+              <path d="M0 0 Q26 -22 30 0 Q26 22 0 0 Z" fill="#E4003A" stroke="#4A2437" stroke-width="3.5" stroke-linejoin="round"/>
+              <ellipse cx="0" cy="0" rx="8" ry="9" fill="#E4003A" stroke="#4A2437" stroke-width="3.5"/>
+            </g>
+          </g>
+          <!-- cockpit rim over kitty -->
+          <path d="M176 88 Q228 76 280 88" fill="none" stroke="#4A2437" stroke-width="4" stroke-linecap="round"/>
+          <!-- wing front -->
+          <path d="M150 118 L126 164 Q124 170 132 170 L150 170 L186 124 Z" fill="#FFB8D2" stroke="#4A2437" stroke-width="4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="bubble" aria-live="polite">
+        <h1 id="hello">Checking the skies…</h1>
+        <p id="helloSub">Loading today's flights</p>
+        <span class="mood" id="mood">…</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="stickers" id="stickers" aria-label="Flight checking so far"></section>
+
+  <section class="card">
+    <h2>Flights checked per trip</h2>
+    <p class="hint">Every 30 minutes Kitty takes off and checks as many flights as she can. Red bars mean the airline site shooed her away for a bit.</p>
+    <div class="chart"><canvas id="runsChart" aria-label="Flights checked per run"></canvas></div>
   </section>
 
-  <section class="panel hidden" id="detail">
-    <button class="link" id="back">← All routes</button>
-    <h2 id="dTitle" style="margin-top:8px"></h2>
-    <div class="kv" id="dKv"></div>
-    <div class="charts">
-      <div class="wide"><div class="sub">Cheapest fare seen per day</div><div class="chart"><canvas id="dailyChart"></canvas></div></div>
-      <div><div class="sub">Model: price by days before departure (Wed departure)</div><div class="chart"><canvas id="curveChart"></canvas></div></div>
-      <div><div class="sub">Model: departure weekday effect</div><div class="chart"><canvas id="weekChart"></canvas></div></div>
+  <section class="card" id="listCard">
+    <h2>Routes and prices</h2>
+    <p class="hint" id="listHint">Cheapest one-way economy fare for any day in the next 30 days, from Kitty's latest check. US dollars.</p>
+    <div class="tools">
+      <input class="search" id="q" type="search" placeholder="Find an airport, like LHR or JFK-LAX" autocomplete="off" aria-label="Find a route">
+      <div class="chips" role="group" aria-label="Sort routes">
+        <button class="chip" type="button" data-sort="busy" aria-pressed="true">Most checked</button>
+        <button class="chip" type="button" data-sort="cheap" aria-pressed="false">Cheapest</button>
+        <button class="chip" type="button" data-sort="az" aria-pressed="false">A to Z</button>
+      </div>
     </div>
+    <div class="tickets" id="tickets"></div>
+    <button class="btn soft more hidden" id="more" type="button">Show more routes</button>
   </section>
 
-  <section class="panel" id="list">
-    <h2>Routes</h2>
-    <input id="q" placeholder="Filter: JFK, LHR-JFK, DEL…" autocomplete="off">
-    <div class="scroll">
-      <table>
-        <thead><tr>
-          <th data-k="route">Route</th>
-          <th class="num" data-k="level">Model price</th>
-          <th class="num" data-k="lastPrice">Last seen</th>
-          <th class="num" data-k="trend">7-day trend</th>
-          <th data-k="best">Best to book</th>
-          <th class="num" data-k="mape">Error</th>
-          <th class="num" data-k="n">Points</th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+  <section class="card hidden" id="detailCard">
+    <div class="detail-head">
+      <button class="back" id="back" type="button">‹ All routes</button>
     </div>
-    <div class="more"><button class="link" id="more"></button></div>
+    <h2 id="dTitle" style="margin-top:6px"></h2>
+    <div class="facts" id="dFacts"></div>
+    <p class="hint" id="aheadHint">Fares for each departure day in the next 30 days</p>
+    <div class="chart tall"><canvas id="aheadChart" aria-label="Fare for each departure day in the next 30 days"></canvas></div>
+    <p class="hint" style="margin-top:16px">How the cheapest fare changed, check by check</p>
+    <div class="chart"><canvas id="dailyChart" aria-label="Cheapest fare per day of checking"></canvas></div>
+
+    <div class="diary hidden" id="diary">
+      <h3>Secret diary</h3>
+      <div class="facts" id="mFacts"></div>
+      <div class="two">
+        <div><p class="hint">Expected price by days before departure</p><div class="chart"><canvas id="curveChart"></canvas></div></div>
+        <div><p class="hint">Departure day: cheaper or pricier than usual</p><div class="chart"><canvas id="weekChart"></canvas></div></div>
+      </div>
+    </div>
   </section>
 </main>
 
+<footer id="foot"></footer>
+
+<dialog id="lockDialog">
+  <form method="dialog" id="lockForm">
+    <h2>Open the secret diary</h2>
+    <p>Enter the diary password to see Kitty's price predictions.</p>
+    <input type="password" id="pw" autocomplete="current-password" aria-label="Diary password" required>
+    <div class="err" id="pwErr" role="alert"></div>
+    <div class="row">
+      <button class="btn soft" type="button" id="cancel">Cancel</button>
+      <button class="btn" type="submit" id="unlockBtn">Unlock</button>
+    </div>
+  </form>
+</dialog>
+
 <script>
 const $ = (id) => document.getElementById(id);
-const fmt = (n) => (n == null ? "—" : Number(n).toLocaleString("en-US"));
-const usd = (n) => (n == null ? "—" : "$" + fmt(n));
-const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const fmt = (n) => (n == null ? "–" : Number(n).toLocaleString("en-US"));
+const usd = (n) => (n == null ? "–" : "$" + fmt(n));
+const PINK = "#FF9EC4", BOW = "#E4003A", INK = "#4A2437", SOFT = "#8A5A70", STITCH = "#FFB8D2", MINT = "#5CC98A";
 const charts = {};
-let routes = [];
-let sortKey = "n", sortDir = -1, shown = 100;
+let routes = [], sortMode = "busy", shown = 60;
+let vaultKey = null, secretRows = null;
+
+Chart.defaults.font.family = '"M PLUS Rounded 1c", system-ui, sans-serif';
+Chart.defaults.font.weight = 700;
+Chart.defaults.color = SOFT;
+Chart.defaults.borderColor = "#FFE3EE";
 
 function draw(id, config) {
   charts[id]?.destroy();
-  Chart.defaults.color = css("--muted");
-  Chart.defaults.borderColor = css("--line");
-  charts[id] = new Chart($(id), { ...config, options: { maintainAspectRatio: false, animation: false, plugins: { legend: { display: false } }, ...config.options } });
+  charts[id] = new Chart($(id), {
+    ...config,
+    options: {
+      maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: INK, cornerRadius: 12, padding: 10, displayColors: false } },
+      ...config.options,
+    },
+  });
 }
+
+const niceDay = (iso) => new Date(`${iso}T12:00:00Z`).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" });
 
 function ago(iso) {
   const m = Math.round((Date.now() - Date.parse(iso)) / 60000);
-  return m < 90 ? `${m} min ago` : m < 2880 ? `${(m / 60).toFixed(1)} h ago` : `${Math.round(m / 1440)} d ago`;
+  if (m < 2) return "just now";
+  if (m < 90) return `${m} minutes ago`;
+  if (m < 2880) return `${Math.round(m / 60)} hours ago`;
+  return `${Math.round(m / 1440)} days ago`;
 }
 
+const getJson = (url) => fetch(url, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const getText = (url) => fetch(url, { cache: "no-store" }).then((r) => (r.ok ? r.text() : "")).catch(() => "");
+
+// ---------- status ----------
 async function loadStatus() {
-  const [runsText, state] = await Promise.all([
-    fetch("runs.ndjson", { cache: "no-store" }).then((r) => (r.ok ? r.text() : "")),
-    fetch("state.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})),
-  ]);
+  const [runsText, state] = await Promise.all([getText("runs.ndjson"), getJson("state.json")]);
   const runs = runsText.split("\n").filter(Boolean).map((l) => JSON.parse(l));
   const last = runs.at(-1);
   const day = runs.filter((r) => Date.now() - Date.parse(r.startedAt) < 86400000);
+  const today = day.reduce((a, r) => a + r.ok + r.empty, 0);
   const total = runs.reduce((a, r) => a + r.ok + r.empty, 0);
   const days = runs.length ? (Date.now() - Date.parse(runs[0].startedAt)) / 86400000 : 0;
-  let health = "🟢 Healthy";
-  if (!last) health = "⚪ No runs yet";
-  else if (Date.now() - Date.parse(last.startedAt) > 2 * 3600000) health = "🔴 Stalled: no run in over 2 h";
-  else if (last.blocked) health = "🟠 Blocked by Google, backing off";
-  else if (day.some((r) => r.blocked)) health = "🟡 Recovering from a block earlier today";
-  $("health").textContent = health + (last ? ` · last run ${ago(last.startedAt)}` : "");
-  const tiles = [
-    [fmt(day.reduce((a, r) => a + r.ok + r.empty, 0)), "searches, last 24 h"],
-    [fmt(total), "searches, total"],
-    [`${days.toFixed(1)} / 90`, "days running"],
-    [fmt(state.activeRoutes), "routes in rotation"],
-    [`${fmt(state.cursor)} / ${fmt(state.activeRoutes)}`, `pass ${state.cycle ?? 0} progress`],
-    [fmt(day.filter((r) => r.blocked).length), "blocks, last 24 h"],
-  ];
-  $("tiles").innerHTML = tiles.map(([v, l]) => `<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("");
+
+  const mood = $("mood");
+  if (!last) {
+    $("hello").textContent = "Kitty hasn't flown yet";
+    $("helloSub").textContent = "The first trip starts on the next half hour.";
+    mood.textContent = "Waiting to take off"; mood.className = "mood";
+  } else {
+    $("hello").innerHTML = `I checked <span class="num">${fmt(today)}</span> flights today!`;
+    $("helloSub").textContent = `Last trip ${ago(last.startedAt)}, ${fmt(last.ok + last.empty)} flights checked.`;
+    const stale = Date.now() - Date.parse(last.startedAt) > 2 * 3600000;
+    if (stale) { mood.textContent = "Kitty is napping: no trip in 2 hours"; mood.className = "mood bad"; }
+    else if (last.blocked) { mood.textContent = "Taking a short break, then trying again"; mood.className = "mood warn"; }
+    else { mood.textContent = "Flying happily"; mood.className = "mood ok"; }
+  }
+
+  const pct = Math.min(100, (days / 90) * 100);
+  $("stickers").innerHTML = `
+    <div class="sticker"><b>${fmt(today)}</b><span>flights checked today</span></div>
+    <div class="sticker"><b>${fmt(total)}</b><span>flights checked in total</span></div>
+    <div class="sticker"><b>${fmt(state?.activeRoutes)}</b><span>routes Kitty watches</span></div>
+    <div class="sticker"><b>Day ${Math.max(1, Math.ceil(days))} of 90</b><span>collecting prices</span><div class="ribbon"><i style="width:${pct}%"></i></div></div>`;
+
   const recent = runs.slice(-96);
   draw("runsChart", {
     type: "bar",
     data: {
-      labels: recent.map((r) => r.startedAt.slice(5, 16).replace("T", " ")),
-      datasets: [{ data: recent.map((r) => r.ok + r.empty), backgroundColor: recent.map((r) => (r.blocked ? css("--bad") : css("--accent"))) }],
+      labels: recent.map((r) => new Date(r.startedAt).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })),
+      datasets: [{ data: recent.map((r) => r.ok + r.empty), backgroundColor: recent.map((r) => (r.blocked ? BOW : PINK)), borderRadius: 6, borderSkipped: false }],
     },
-    options: { scales: { x: { display: false }, y: { beginAtZero: true, ticks: { maxTicksLimit: 3 } } } },
+    options: { scales: { x: { display: false }, y: { beginAtZero: true, grid: { color: "#FFF0F6" }, ticks: { maxTicksLimit: 3 } } } },
   });
 }
 
+// ---------- routes ----------
 async function loadRoutes() {
-  const res = await fetch("models/summary.json", { cache: "no-store" });
-  if (!res.ok) { $("updated").textContent = "No model yet"; return; }
-  const s = await res.json();
+  const s = await getJson("prices/summary.json");
+  if (!s) { $("tickets").innerHTML = `<p class="empty">No prices yet. They show up after Kitty's first trip.</p>`; return; }
   const ix = Object.fromEntries(s.columns.map((c, i) => [c, i]));
-  routes = s.routes.map((r) => ({ ...Object.fromEntries(s.columns.map((c) => [c, r[ix[c]]])), route: `${r[ix.origin]}-${r[ix.destination]}` }));
-  $("updated").textContent = `${fmt(routes.length)} routes modelled · model updated ${ago(s.updated)}`;
-  renderRows();
+  routes = s.routes.map((r) => ({
+    origin: r[ix.origin], destination: r[ix.destination], searches: r[ix.searches],
+    lastPrice: r[ix.lastPrice], lastDep: r[ix.lastDep], low: r[ix.low], high: r[ix.high], lastSeen: r[ix.lastSeen],
+    key: `${r[ix.origin]}-${r[ix.destination]}`,
+  }));
+  $("foot").textContent = `${fmt(routes.length)} routes with prices. Updated ${ago(s.updated)}.`;
+  renderTickets();
 }
 
-function renderRows() {
-  const q = $("q").value.trim().toUpperCase();
-  const list = routes
-    .filter((r) => !q || r.route.includes(q))
-    .sort((a, b) => {
-      const x = a[sortKey], y = b[sortKey];
-      if (x == null) return 1;
-      if (y == null) return -1;
-      return (x > y ? 1 : x < y ? -1 : 0) * sortDir;
-    });
-  $("rows").innerHTML = list.slice(0, shown).map((r) => `
-    <tr data-route="${r.route}">
-      <td><b>${r.origin}</b> → <b>${r.destination}</b></td>
-      <td class="num">${usd(r.level)}</td>
-      <td class="num">${usd(r.lastPrice)}</td>
-      <td class="num ${r.trend > 0 ? "up" : r.trend < 0 ? "down" : ""}">${r.trend == null ? "—" : (r.trend > 0 ? "+" : "") + r.trend + "%"}</td>
-      <td>${r.best ? r.best + " d" : "—"}</td>
-      <td class="num">${r.mape == null ? "—" : r.mape + "%"}</td>
-      <td class="num">${fmt(r.n)}</td>
-    </tr>`).join("");
-  $("more").textContent = list.length > shown ? `Show more (${fmt(list.length - shown)} left)` : "";
+function renderTickets() {
+  const q = $("q").value.trim().toUpperCase().replace(/\s+/g, "");
+  const cmp = {
+    busy: (a, b) => b.searches - a.searches || a.key.localeCompare(b.key),
+    cheap: (a, b) => (a.lastPrice ?? 1e9) - (b.lastPrice ?? 1e9),
+    az: (a, b) => a.key.localeCompare(b.key),
+  }[sortMode];
+  const list = routes.filter((r) => !q || r.key.includes(q)).sort(cmp);
+  if (!list.length) {
+    $("tickets").innerHTML = `<p class="empty">No routes match "${q.replace(/[<>&"]/g, "")}". Try a 3-letter airport code.</p>`;
+    $("more").classList.add("hidden");
+    return;
+  }
+  $("tickets").innerHTML = list.slice(0, shown).map((r) => {
+    const m = secretRows?.get(r.key);
+    const secret = m ? `<span class="secret">🎀 Expected ${usd(m.level)}${m.best ? `, best booked ${m.best} days ahead` : ""}</span>` : "";
+    return `<button class="ticket" type="button" data-key="${r.key}">
+      <span class="route">${r.origin}<small>✈</small>${r.destination}</span>
+      <span class="price">${usd(r.lastPrice)}</span>
+      <span class="meta">${r.lastDep ? `Cheapest on ${niceDay(r.lastDep)}` : "No fares found"}</span>
+      ${secret}
+    </button>`;
+  }).join("");
+  $("more").classList.toggle("hidden", list.length <= shown);
+  $("more").textContent = `Show more routes (${fmt(list.length - shown)} left)`;
 }
 
 async function openRoute(key) {
   const [origin] = key.split("-");
-  const models = await fetch(`models/routes/${origin}.json`, { cache: "no-store" }).then((r) => r.json());
-  const m = models.find((x) => `${x.origin}-${x.destination}` === key);
-  if (!m) return;
-  location.hash = key;
-  $("list").classList.add("hidden");
-  $("detail").classList.remove("hidden");
-  $("dTitle").textContent = `${m.origin} → ${m.destination}`;
-  const kv = [
-    ["Model price now", usd(m.level)],
-    ["Last seen", m.last ? `${usd(m.last.price)} (${m.last.level ?? "?"})` : "—"],
-    ["Best time to book", m.best ? `${m.best} days out` : "—"],
-    ["7-day trend", m.trend == null ? "—" : `${m.trend > 0 ? "+" : ""}${m.trend}%`],
-    ["Prediction error", m.mape == null ? "—" : `${m.mape}% (${fmt(m.scored)} tests)`],
-    ["Data points", fmt(m.n)],
-  ];
-  $("dKv").innerHTML = kv.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+  const list = await getJson(`prices/routes/${origin}.json`);
+  const r = list?.find((x) => `${x.origin}-${x.destination}` === key);
+  if (!r) return;
+  history.replaceState(null, "", "#" + key);
+  $("listCard").classList.add("hidden");
+  $("detailCard").classList.remove("hidden");
+  $("dTitle").textContent = `${r.origin} ✈ ${r.destination}`;
+  $("dFacts").innerHTML = [
+    ["Cheapest next 30 days", usd(r.last?.price)],
+    ["Cheapest day to fly", r.last?.dep ? niceDay(r.last.dep) : "–"],
+    ["Cheapest ever seen", usd(r.low)],
+    ["Times checked", fmt(r.searches)],
+  ].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+  const ahead = r.ahead ?? [];
+  $("aheadHint").textContent = r.last ? `Fares for each departure day in the next 30 days, checked ${ago(r.last.t)}` : "Fares for each departure day in the next 30 days";
+  draw("aheadChart", {
+    type: "bar",
+    data: {
+      labels: ahead.map((a) => niceDay(a[0])),
+      datasets: [{ data: ahead.map((a) => a[1]), backgroundColor: ahead.map((a) => (a[0] === r.last?.dep ? BOW : PINK)), borderRadius: 6, borderSkipped: false }],
+    },
+    options: { scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 8, maxRotation: 0 } }, y: { beginAtZero: false, ticks: { callback: (v) => "$" + v }, grid: { color: "#FFF0F6" } } } },
+  });
   draw("dailyChart", {
     type: "line",
-    data: { labels: m.daily.map((d) => d[0]), datasets: [{ data: m.daily.map((d) => d[1]), borderColor: css("--accent"), pointRadius: 0, tension: 0.2, borderWidth: 2 }] },
-    options: { scales: { x: { ticks: { maxTicksLimit: 6 } }, y: { ticks: { callback: (v) => "$" + v } } } },
+    data: {
+      labels: r.daily.map((d) => d[0]),
+      datasets: [{ data: r.daily.map((d) => d[1]), borderColor: PINK, backgroundColor: "rgba(255,158,196,.18)", fill: true, tension: .35, borderWidth: 4, pointRadius: 0, pointHoverRadius: 6, pointHoverBackgroundColor: BOW }],
+    },
+    options: { interaction: { mode: "index", intersect: false }, scales: { x: { ticks: { maxTicksLimit: 6 }, grid: { display: false } }, y: { ticks: { callback: (v) => "$" + v }, grid: { color: "#FFF0F6" } } } },
   });
-  draw("curveChart", {
-    type: "bar",
-    data: { labels: m.curve.map((c) => c.dbd), datasets: [{ data: m.curve.map((c) => c.price), backgroundColor: m.curve.map((c) => (c.dbd === m.best ? css("--good") : c.n ? css("--accent") : css("--line"))) }] },
-    options: { scales: { y: { ticks: { callback: (v) => "$" + v } } } },
-  });
-  draw("weekChart", {
-    type: "bar",
-    data: { labels: m.weekdays.map((w) => w.day), datasets: [{ data: m.weekdays.map((w) => w.pct), backgroundColor: m.weekdays.map((w) => (w.pct <= 0 ? css("--good") : css("--bad"))) }] },
-    options: { scales: { y: { ticks: { callback: (v) => v + "%" } } } },
-  });
-  window.scrollTo(0, 0);
+  await renderDiary(key);
+  window.scrollTo({ top: $("detailCard").offsetTop - 12 });
 }
 
 function closeRoute() {
   history.replaceState(null, "", location.pathname);
-  $("detail").classList.add("hidden");
-  $("list").classList.remove("hidden");
+  $("detailCard").classList.add("hidden");
+  $("listCard").classList.remove("hidden");
 }
 
-$("q").addEventListener("input", () => { shown = 100; renderRows(); });
-$("more").addEventListener("click", () => { shown += 200; renderRows(); });
-$("rows").addEventListener("click", (e) => { const tr = e.target.closest("tr"); if (tr) openRoute(tr.dataset.route); });
+// ---------- secret diary (encrypted predictions) ----------
+const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+
+async function deriveVaultKey(password) {
+  const kf = await getJson("models/key.json");
+  if (!kf) throw new Error("The diary is empty until the first training run.");
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(kf.salt), iterations: kf.iterations, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  await openBlob(key, b64(kf.check)); // throws on a wrong password
+  return key;
+}
+
+async function openBlob(key, bytes) {
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes.slice(0, 12) }, key, bytes.slice(12));
+  return new TextDecoder().decode(plain);
+}
+
+async function openFile(url) {
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return null;
+  return JSON.parse(await openBlob(vaultKey, new Uint8Array(await res.arrayBuffer())));
+}
+
+async function unlock(password, remember) {
+  vaultKey = await deriveVaultKey(password);
+  if (remember) { try { sessionStorage.setItem("diary", password); } catch {} }
+  const s = await openFile("models/summary.enc");
+  if (s) {
+    const ix = Object.fromEntries(s.columns.map((c, i) => [c, i]));
+    secretRows = new Map(s.routes.map((r) => [`${r[ix.origin]}-${r[ix.destination]}`, { level: r[ix.level], best: r[ix.best], mape: r[ix.mape], trend: r[ix.trend] }]));
+  }
+  $("lockLabel").textContent = "Diary open";
+  $("listHint").textContent = "Cheapest fare in the next 30 days, with Kitty's secret expected price underneath.";
+  renderTickets();
+  if (!$("detailCard").classList.contains("hidden")) renderDiary(location.hash.slice(1));
+}
+
+async function renderDiary(key) {
+  const diary = $("diary");
+  if (!vaultKey) { diary.classList.add("hidden"); return; }
+  const models = await openFile(`models/routes/${key.split("-")[0]}.enc`);
+  const m = models?.find((x) => `${x.origin}-${x.destination}` === key);
+  if (!m) { diary.classList.add("hidden"); return; }
+  diary.classList.remove("hidden");
+  $("mFacts").innerHTML = [
+    ["Expected price now", usd(m.level)],
+    ["Best time to book", m.best ? `${m.best} days ahead` : "–"],
+    ["Last 7 days", m.trend == null ? "–" : `${m.trend > 0 ? "up" : m.trend < 0 ? "down" : "flat"} ${Math.abs(m.trend)}%`],
+    ["Typical miss", m.mape == null ? "–" : `${m.mape}%`],
+  ].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+  draw("curveChart", {
+    type: "bar",
+    data: { labels: m.curve.map((c) => c.dbd), datasets: [{ data: m.curve.map((c) => c.price), backgroundColor: m.curve.map((c) => (c.dbd === m.best ? BOW : c.n ? PINK : STITCH)), borderRadius: 8, borderSkipped: false }] },
+    options: { scales: { x: { grid: { display: false } }, y: { ticks: { callback: (v) => "$" + v }, grid: { color: "#FFF0F6" } } } },
+  });
+  draw("weekChart", {
+    type: "bar",
+    data: { labels: m.weekdays.map((w) => w.day), datasets: [{ data: m.weekdays.map((w) => w.pct), backgroundColor: m.weekdays.map((w) => (w.pct <= 0 ? MINT : PINK)), borderRadius: 8, borderSkipped: false }] },
+    options: { scales: { x: { grid: { display: false } }, y: { suggestedMin: -10, suggestedMax: 10, ticks: { callback: (v) => v + "%" }, grid: { color: "#FFF0F6" } } } },
+  });
+}
+
+// ---------- wiring ----------
+const dialog = $("lockDialog");
+$("lockBtn").addEventListener("click", () => {
+  if (vaultKey) {
+    vaultKey = null; secretRows = null;
+    try { sessionStorage.removeItem("diary"); } catch {}
+    $("lockLabel").textContent = "Secret diary";
+    $("listHint").textContent = "Cheapest one-way economy fare for any day in the next 30 days, from Kitty's latest check. US dollars.";
+    $("diary").classList.add("hidden");
+    renderTickets();
+    return;
+  }
+  $("pwErr").textContent = "";
+  $("pw").value = "";
+  dialog.showModal();
+});
+$("cancel").addEventListener("click", () => dialog.close());
+$("lockForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("unlockBtn").disabled = true;
+  $("unlockBtn").textContent = "Opening…";
+  try {
+    await unlock($("pw").value, true);
+    dialog.close();
+  } catch (err) {
+    $("pwErr").textContent = err instanceof Error && err.message.startsWith("The diary") ? err.message : "That password doesn't open the diary. Try again.";
+  } finally {
+    $("unlockBtn").disabled = false;
+    $("unlockBtn").textContent = "Unlock";
+  }
+});
+$("q").addEventListener("input", () => { shown = 60; renderTickets(); });
+$("more").addEventListener("click", () => { shown += 120; renderTickets(); });
+$("tickets").addEventListener("click", (e) => { const t = e.target.closest(".ticket"); if (t) openRoute(t.dataset.key); });
 $("back").addEventListener("click", closeRoute);
-document.querySelectorAll("th[data-k]").forEach((th) => th.addEventListener("click", () => {
-  const k = th.dataset.k;
-  sortDir = sortKey === k ? -sortDir : k === "route" || k === "best" ? 1 : -1;
-  sortKey = k;
-  renderRows();
+document.querySelectorAll(".chip").forEach((c) => c.addEventListener("click", () => {
+  sortMode = c.dataset.sort;
+  document.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x === c)));
+  renderTickets();
 }));
 
-loadStatus();
-loadRoutes().then(() => { if (location.hash.length > 1) openRoute(location.hash.slice(1)); });
+(async () => {
+  let saved = null;
+  try { saved = sessionStorage.getItem("diary"); } catch {}
+  if (saved) await unlock(saved, false).catch(() => {});
+  loadStatus();
+  await loadRoutes();
+  if (location.hash.length > 1) openRoute(decodeURIComponent(location.hash.slice(1)));
+})();
 </script>
 </body>
 </html>
