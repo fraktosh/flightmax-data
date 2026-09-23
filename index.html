@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlightMax Fare Lab</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #14171c; --muted: #636b78; --line: #e3e6eb;
+    --accent: #2563eb; --good: #15803d; --warn: #b45309; --bad: #b91c1c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1116; --panel: #161a21; --text: #e7eaf0; --muted: #929aa8; --line: #262c36;
+      --accent: #60a5fa; --good: #4ade80; --warn: #fbbf24; --bad: #f87171;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 4px 0 2px; }
+  h2 { font-size: 16px; margin: 0 0 10px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-top: 14px; }
+  .health { font-weight: 600; font-size: 16px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+  .tile { border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  .tile b { display: block; font-size: 20px; font-variant-numeric: tabular-nums; }
+  .tile span { color: var(--muted); font-size: 12px; }
+  input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
+  td.num, th.num { text-align: right; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .scroll { overflow-x: auto; }
+  .up { color: var(--bad); } .down { color: var(--good); }
+  .charts { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 760px) { .charts { grid-template-columns: 1fr 1fr; } .charts .wide { grid-column: 1 / -1; } }
+  .chart { position: relative; height: 220px; }
+  .kv { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 6px 0 12px; }
+  .kv div span { color: var(--muted); font-size: 12px; display: block; }
+  .kv div b { font-size: 17px; }
+  button.link { background: none; border: 0; color: var(--accent); padding: 0; font: inherit; cursor: pointer; }
+  .hidden { display: none; }
+  .more { text-align: center; margin-top: 10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>✈ FlightMax Fare Lab</h1>
+  <div class="sub" id="updated">Loading…</div>
+
+  <section class="panel">
+    <div class="health" id="health"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="chart" style="height:120px;margin-top:12px"><canvas id="runsChart"></canvas></div>
+  </section>
+
+  <section class="panel hidden" id="detail">
+    <button class="link" id="back">← All routes</button>
+    <h2 id="dTitle" style="margin-top:8px"></h2>
+    <div class="kv" id="dKv"></div>
+    <div class="charts">
+      <div class="wide"><div class="sub">Cheapest fare seen per day</div><div class="chart"><canvas id="dailyChart"></canvas></div></div>
+      <div><div class="sub">Model: price by days before departure (Wed departure)</div><div class="chart"><canvas id="curveChart"></canvas></div></div>
+      <div><div class="sub">Model: departure weekday effect</div><div class="chart"><canvas id="weekChart"></canvas></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="list">
+    <h2>Routes</h2>
+    <input id="q" placeholder="Filter: JFK, LHR-JFK, DEL…" autocomplete="off">
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th data-k="route">Route</th>
+          <th class="num" data-k="level">Model price</th>
+          <th class="num" data-k="lastPrice">Last seen</th>
+          <th class="num" data-k="trend">7-day trend</th>
+          <th data-k="best">Best to book</th>
+          <th class="num" data-k="mape">Error</th>
+          <th class="num" data-k="n">Points</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="more"><button class="link" id="more"></button></div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => (n == null ? "—" : Number(n).toLocaleString("en-US"));
+const usd = (n) => (n == null ? "—" : "$" + fmt(n));
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const charts = {};
+let routes = [];
+let sortKey = "n", sortDir = -1, shown = 100;
+
+function draw(id, config) {
+  charts[id]?.destroy();
+  Chart.defaults.color = css("--muted");
+  Chart.defaults.borderColor = css("--line");
+  charts[id] = new Chart($(id), { ...config, options: { maintainAspectRatio: false, animation: false, plugins: { legend: { display: false } }, ...config.options } });
+}
+
+function ago(iso) {
+  const m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+  return m < 90 ? `${m} min ago` : m < 2880 ? `${(m / 60).toFixed(1)} h ago` : `${Math.round(m / 1440)} d ago`;
+}
+
+async function loadStatus() {
+  const [runsText, state] = await Promise.all([
+    fetch("runs.ndjson", { cache: "no-store" }).then((r) => (r.ok ? r.text() : "")),
+    fetch("state.json", { cache: "no-store" }).then((r) => (r.ok ? r.json() : {})),
+  ]);
+  const runs = runsText.split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  const last = runs.at(-1);
+  const day = runs.filter((r) => Date.now() - Date.parse(r.startedAt) < 86400000);
+  const total = runs.reduce((a, r) => a + r.ok + r.empty, 0);
+  const days = runs.length ? (Date.now() - Date.parse(runs[0].startedAt)) / 86400000 : 0;
+  let health = "🟢 Healthy";
+  if (!last) health = "⚪ No runs yet";
+  else if (Date.now() - Date.parse(last.startedAt) > 2 * 3600000) health = "🔴 Stalled: no run in over 2 h";
+  else if (last.blocked) health = "🟠 Blocked by Google, backing off";
+  else if (day.some((r) => r.blocked)) health = "🟡 Recovering from a block earlier today";
+  $("health").textContent = health + (last ? ` · last run ${ago(last.startedAt)}` : "");
+  const tiles = [
+    [fmt(day.reduce((a, r) => a + r.ok + r.empty, 0)), "searches, last 24 h"],
+    [fmt(total), "searches, total"],
+    [`${days.toFixed(1)} / 90`, "days running"],
+    [fmt(state.activeRoutes), "routes in rotation"],
+    [`${fmt(state.cursor)} / ${fmt(state.activeRoutes)}`, `pass ${state.cycle ?? 0} progress`],
+    [fmt(day.filter((r) => r.blocked).length), "blocks, last 24 h"],
+  ];
+  $("tiles").innerHTML = tiles.map(([v, l]) => `<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("");
+  const recent = runs.slice(-96);
+  draw("runsChart", {
+    type: "bar",
+    data: {
+      labels: recent.map((r) => r.startedAt.slice(5, 16).replace("T", " ")),
+      datasets: [{ data: recent.map((r) => r.ok + r.empty), backgroundColor: recent.map((r) => (r.blocked ? css("--bad") : css("--accent"))) }],
+    },
+    options: { scales: { x: { display: false }, y: { beginAtZero: true, ticks: { maxTicksLimit: 3 } } } },
+  });
+}
+
+async function loadRoutes() {
+  const res = await fetch("models/summary.json", { cache: "no-store" });
+  if (!res.ok) { $("updated").textContent = "No model yet"; return; }
+  const s = await res.json();
+  const ix = Object.fromEntries(s.columns.map((c, i) => [c, i]));
+  routes = s.routes.map((r) => ({ ...Object.fromEntries(s.columns.map((c) => [c, r[ix[c]]])), route: `${r[ix.origin]}-${r[ix.destination]}` }));
+  $("updated").textContent = `${fmt(routes.length)} routes modelled · model updated ${ago(s.updated)}`;
+  renderRows();
+}
+
+function renderRows() {
+  const q = $("q").value.trim().toUpperCase();
+  const list = routes
+    .filter((r) => !q || r.route.includes(q))
+    .sort((a, b) => {
+      const x = a[sortKey], y = b[sortKey];
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return (x > y ? 1 : x < y ? -1 : 0) * sortDir;
+    });
+  $("rows").innerHTML = list.slice(0, shown).map((r) => `
+    <tr data-route="${r.route}">
+      <td><b>${r.origin}</b> → <b>${r.destination}</b></td>
+      <td class="num">${usd(r.level)}</td>
+      <td class="num">${usd(r.lastPrice)}</td>
+      <td class="num ${r.trend > 0 ? "up" : r.trend < 0 ? "down" : ""}">${r.trend == null ? "—" : (r.trend > 0 ? "+" : "") + r.trend + "%"}</td>
+      <td>${r.best ? r.best + " d" : "—"}</td>
+      <td class="num">${r.mape == null ? "—" : r.mape + "%"}</td>
+      <td class="num">${fmt(r.n)}</td>
+    </tr>`).join("");
+  $("more").textContent = list.length > shown ? `Show more (${fmt(list.length - shown)} left)` : "";
+}
+
+async function openRoute(key) {
+  const [origin] = key.split("-");
+  const models = await fetch(`models/routes/${origin}.json`, { cache: "no-store" }).then((r) => r.json());
+  const m = models.find((x) => `${x.origin}-${x.destination}` === key);
+  if (!m) return;
+  location.hash = key;
+  $("list").classList.add("hidden");
+  $("detail").classList.remove("hidden");
+  $("dTitle").textContent = `${m.origin} → ${m.destination}`;
+  const kv = [
+    ["Model price now", usd(m.level)],
+    ["Last seen", m.last ? `${usd(m.last.price)} (${m.last.level ?? "?"})` : "—"],
+    ["Best time to book", m.best ? `${m.best} days out` : "—"],
+    ["7-day trend", m.trend == null ? "—" : `${m.trend > 0 ? "+" : ""}${m.trend}%`],
+    ["Prediction error", m.mape == null ? "—" : `${m.mape}% (${fmt(m.scored)} tests)`],
+    ["Data points", fmt(m.n)],
+  ];
+  $("dKv").innerHTML = kv.map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join("");
+  draw("dailyChart", {
+    type: "line",
+    data: { labels: m.daily.map((d) => d[0]), datasets: [{ data: m.daily.map((d) => d[1]), borderColor: css("--accent"), pointRadius: 0, tension: 0.2, borderWidth: 2 }] },
+    options: { scales: { x: { ticks: { maxTicksLimit: 6 } }, y: { ticks: { callback: (v) => "$" + v } } } },
+  });
+  draw("curveChart", {
+    type: "bar",
+    data: { labels: m.curve.map((c) => c.dbd), datasets: [{ data: m.curve.map((c) => c.price), backgroundColor: m.curve.map((c) => (c.dbd === m.best ? css("--good") : c.n ? css("--accent") : css("--line"))) }] },
+    options: { scales: { y: { ticks: { callback: (v) => "$" + v } } } },
+  });
+  draw("weekChart", {
+    type: "bar",
+    data: { labels: m.weekdays.map((w) => w.day), datasets: [{ data: m.weekdays.map((w) => w.pct), backgroundColor: m.weekdays.map((w) => (w.pct <= 0 ? css("--good") : css("--bad"))) }] },
+    options: { scales: { y: { ticks: { callback: (v) => v + "%" } } } },
+  });
+  window.scrollTo(0, 0);
+}
+
+function closeRoute() {
+  history.replaceState(null, "", location.pathname);
+  $("detail").classList.add("hidden");
+  $("list").classList.remove("hidden");
+}
+
+$("q").addEventListener("input", () => { shown = 100; renderRows(); });
+$("more").addEventListener("click", () => { shown += 200; renderRows(); });
+$("rows").addEventListener("click", (e) => { const tr = e.target.closest("tr"); if (tr) openRoute(tr.dataset.route); });
+$("back").addEventListener("click", closeRoute);
+document.querySelectorAll("th[data-k]").forEach((th) => th.addEventListener("click", () => {
+  const k = th.dataset.k;
+  sortDir = sortKey === k ? -sortDir : k === "route" || k === "best" ? 1 : -1;
+  sortKey = k;
+  renderRows();
+}));
+
+loadStatus();
+loadRoutes().then(() => { if (location.hash.length > 1) openRoute(location.hash.slice(1)); });
+</script>
+</body>
+</html>
