@@ -53,6 +53,9 @@ jobs:
       - name: Train
         if: always()
         working-directory: app
+        env:
+          # Predictions are encrypted with this before they reach the public repo.
+          DASHBOARD_PASSWORD: ${{ secrets.DASHBOARD_PASSWORD }}
         run: npx tsx collector/train.ts --store ../data
 
       - name: Status page and dashboard
