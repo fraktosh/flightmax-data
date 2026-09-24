@@ -1,0 +1,11 @@
+[Unit]
+Description=Fare collector pass
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=collector
+ExecStart=/opt/collector/run.sh
+TimeoutStartSec=50min
+Nice=5

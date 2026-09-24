@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the fare collector back to back (about every 28 minutes)
+
+[Timer]
+OnBootSec=2min
+# Next pass starts 2 min after the previous one ends, even if it failed.
+OnUnitInactiveSec=2min
+AccuracySec=10s
+
+[Install]
+WantedBy=timers.target
