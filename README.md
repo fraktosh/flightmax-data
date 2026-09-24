@@ -10,7 +10,7 @@ Updated 2026-09-24 20:11 UTC
 | Searches, last 24 h | 9,217 |
 | Searches, total | 9,217 |
 | Blocks, last 24 h | 0 |
-| Running for | 0.9 of 90 days |
+| Running for | 0.9 days |
 | Routes in rotation | 4,500 |
 | Routes with data | 4,074 |
 | Routes skipped (no fares) | 54 |

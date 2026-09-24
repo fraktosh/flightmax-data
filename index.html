@@ -340,12 +340,11 @@ async function loadStatus() {
     else { mood.textContent = "Flying happily"; mood.className = "mood ok"; }
   }
 
-  const pct = Math.min(100, (days / 90) * 100);
   $("stickers").innerHTML = `
     <div class="sticker"><b>${fmt(today)}</b><span>flights checked today</span></div>
     <div class="sticker"><b>${fmt(total)}</b><span>flights checked in total</span></div>
     <div class="sticker"><b>${fmt(state?.activeRoutes)}</b><span>routes Kitty watches</span></div>
-    <div class="sticker"><b>Day ${Math.max(1, Math.ceil(days))} of 90</b><span>collecting prices</span><div class="ribbon"><i style="width:${pct}%"></i></div></div>`;
+    <div class="sticker"><b>Day ${fmt(Math.max(1, Math.ceil(days)))}</b><span>collecting prices, nonstop</span></div>`;
 
   const recent = runs.slice(-96);
   draw("runsChart", {
