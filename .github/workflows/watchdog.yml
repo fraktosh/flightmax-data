@@ -1,8 +1,8 @@
 name: Watchdog
 
-# The Oracle VM (see vps/) collects every ~28 min and pushes runs.ndjson.
-# If the newest run in runs.ndjson is older than STALE_MINUTES and no
-# fallback run is active, start "Collect and train" on GitHub Actions.
+# "Collect and train" chains itself (each run starts the next). If the chain
+# breaks, runs.ndjson stops getting new runs; once the newest is older than
+# STALE_MINUTES and no collect run is active, start one.
 # Safe to trigger as often as you like.
 #
 # GitHub drops many scheduled runs, so an external scheduler (cron-job.org)
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Start fallback collect if the VM is stale
+      - name: Restart collect if the chain broke
         if: vars.FALLBACK_RUNS != 'false'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -48,8 +48,8 @@ jobs:
             active=$((active + n))
           done
           if [ "$active" -gt 0 ]; then
-            echo "Fallback collect already active; nothing to do."
+            echo "Collect already active; nothing to do."
           else
-            echo "Collector is stale; starting fallback collect."
+            echo "Collector is stale; starting collect."
             gh workflow run collect.yml -R "$REPO" --ref main
           fi
