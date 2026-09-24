@@ -7,7 +7,7 @@ on:
     inputs:
       minutes:
         description: Minutes to collect for
-        default: "25"
+        default: "170"
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 190
     steps:
       - name: Check out data
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
       - name: Collect
         working-directory: app
         env:
-          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '25' }}
+          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '170' }}
         run: npx tsx collector/run.ts --store ../data
 
       - name: Train
