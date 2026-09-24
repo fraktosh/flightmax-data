@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger the GitHub collector watchdog
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=collector
+ExecStart=/opt/collector/heartbeat.sh
+TimeoutStartSec=2min

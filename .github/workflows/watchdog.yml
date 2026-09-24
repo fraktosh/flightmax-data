@@ -5,12 +5,15 @@ name: Watchdog
 # STALE_MINUTES and no collect run is active, start one.
 # Safe to trigger as often as you like.
 #
-# GitHub drops many scheduled runs, so an external scheduler (cron-job.org)
-# can also call this workflow's dispatch API.
+# GitHub drops many scheduled runs, so the Oracle VM (vps/heartbeat.*) also
+# force-pushes an empty commit to the `heartbeat` branch every 10 min, which
+# triggers this workflow. An external scheduler can also call its dispatch API.
 
 on:
   schedule:
     - cron: "*/10 * * * *"
+  push:
+    branches: [heartbeat]
   workflow_dispatch:
 
 permissions:
