@@ -2,11 +2,11 @@
 
 **🟢 Healthy**
 
-Updated 2026-09-24 17:06 UTC
+Updated 2026-09-24 17:12 UTC
 
 | | |
 |---|---|
-| Last run | 25 min ago: 683 ok, 41 empty, 3 errors |
+| Last run | 30 min ago: 683 ok, 41 empty, 3 errors |
 | Searches, last 24 h | 4,219 |
 | Searches, total | 4,219 |
 | Blocks, last 24 h | 0 |
@@ -20,7 +20,7 @@ Updated 2026-09-24 17:06 UTC
 Searches per hour, last 24 h:
 
 ```
-····▁▃·▁·····▂·▁·····▅█▄
+····▁▃·▁····▂··▁·····▅█▄
 ```
 
 ## Recent runs
