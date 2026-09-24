@@ -1,20 +1,18 @@
-# Oracle VM collector
+# Oracle VM collector (disabled)
 
-Primary collector. Runs on an Oracle Cloud Always Free VM (`fare-collector-micro`,
-ap-mumbai-1, VM.Standard.E2.1.Micro, Ubuntu 24.04). GitHub Actions is the fallback:
-`watchdog.yml` starts `collect.yml` when `runs.ndjson` hasn't had a new run for 75 min.
+Tried on 2026-09-24 as the primary collector on an Oracle Cloud Always Free VM
+(`fare-collector-micro`, ap-mumbai-1). Google blocked the VM's IP on the first
+request, so the timer is disabled and GitHub Actions is the collector again.
 
-- `setup.sh`: run as root on a fresh VM (expects the other files in `/tmp`).
-  Installs Node 20, 2 GB swap, a `collector` user with two deploy keys
-  (`id_app` read-only on fraktosh/flightmax, `id_data` write on this repo).
-- `run.sh`: one pass (collect 25 min, train, status page, push). Installed at
-  `/opt/collector/run.sh`.
+The files here still work on a host whose IP Google doesn't block (for example
+a machine on a home connection):
+
+- `setup.sh`: run as root (expects the other files in `/tmp`). Installs Node 20,
+  2 GB swap, a `collector` user with two deploy keys (`id_app` read-only on
+  fraktosh/flightmax, `id_data` write on this repo).
+- `run.sh`: one pass (collect 25 min, train, status page, push).
 - `collector.timer`: starts the next pass 2 min after the previous one ends.
-- `/etc/collector.password` on the VM holds `DASHBOARD_PASSWORD`, raw, mode 600. Not in git.
+- `/etc/collector.password` holds `DASHBOARD_PASSWORD`, raw, mode 600. It must
+  match the password the models were encrypted with, or train.ts rebuilds them.
 
-Useful commands on the VM:
-
-    systemctl list-timers collector.timer
-    journalctl -u collector -n 50
-    sudo systemctl start collector      # run a pass now
-    sudo systemctl disable --now collector.timer   # stop collecting here
+Don't run it alongside the Actions chain: both would push state.json.
