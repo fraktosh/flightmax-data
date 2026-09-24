@@ -6,6 +6,8 @@
 set -euo pipefail
 cd /opt/collector/data
 git fetch -q origin main
+# Keep the checkout current too; Caddy serves it as the public dashboard.
+git reset -q --hard origin/main
 wf=$(git rev-parse origin/main:.github/workflows/watchdog.yml)
 t=$(printf '100644 blob %s\twatchdog.yml\n' "$wf" | git mktree)
 t=$(printf '040000 tree %s\tworkflows\n' "$t" | git mktree)

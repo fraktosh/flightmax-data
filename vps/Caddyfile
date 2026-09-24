@@ -1,0 +1,10 @@
+# Public copy of the GitHub Pages dashboard, served from the data checkout
+# that heartbeat.sh keeps in sync with main. HTTPS via Let's Encrypt.
+132-226-189-76.sslip.io {
+	root * /opt/collector/data
+	@git path /.git /.git/*
+	respond @git 404
+	header Cache-Control "no-cache"
+	encode gzip
+	file_server
+}
