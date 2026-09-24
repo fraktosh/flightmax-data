@@ -1,0 +1,43 @@
+name: Watchdog
+
+# Keeps "Collect and train" running. If no collect run is queued or in
+# progress, start one. Safe to trigger as often as you like.
+#
+# GitHub's own cron is unreliable (many runs are dropped), so an external
+# scheduler (cron-job.org) also calls this workflow's dispatch API every
+# 10 minutes. Either trigger alone is enough to restart a broken chain.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Start collect if idle
+        if: vars.CHAIN_RUNS != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          active=0
+          for status in queued in_progress waiting pending requested; do
+            n=$(gh run list -R "$REPO" -w collect.yml -s "$status" -L 5 --json databaseId -q length)
+            active=$((active + n))
+          done
+          if [ "$active" -gt 0 ]; then
+            echo "Collect is active ($active run(s)); nothing to do."
+          else
+            echo "Collect is idle; starting a run."
+            gh workflow run collect.yml -R "$REPO" --ref main
+          fi

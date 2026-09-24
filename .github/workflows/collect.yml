@@ -1,15 +1,14 @@
 name: Collect and train
 
 on:
-  schedule:
-    # GitHub drops or delays many scheduled runs, so this is only a backstop.
-    # Each successful run queues the next one itself (see "Queue next run").
-    - cron: "7,37 * * * *"
+  # Started by the previous run (see "Queue next run") and by watchdog.yml,
+  # which restarts the chain if it ever breaks. No cron here: GitHub drops
+  # most scheduled runs, and watchdog.yml owns the schedule.
   workflow_dispatch:
     inputs:
       minutes:
         description: Minutes to collect for
-        default: "50"
+        default: "25"
 
 permissions:
   contents: write
@@ -22,7 +21,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 45
     steps:
       - name: Check out data
         uses: actions/checkout@v4
@@ -50,7 +49,7 @@ jobs:
       - name: Collect
         working-directory: app
         env:
-          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '50' }}
+          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '25' }}
         run: npx tsx collector/run.ts --store ../data
 
       - name: Train
@@ -84,10 +83,15 @@ jobs:
           done
           exit 1
 
-      # Chain runs so collection and the status page don't depend on cron.
+      # Chain runs so collection never waits on cron: 25 min collecting plus
+      # ~3 min setup puts a fresh run (and status page) roughly every 30 min.
       # Set repo variable CHAIN_RUNS=false to stop the chain.
       - name: Queue next run
-        if: success() && vars.CHAIN_RUNS != 'false'
+        if: ${{ !cancelled() && vars.CHAIN_RUNS != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run collect.yml -R ${{ github.repository }} --ref ${{ github.ref_name }}
+          FAILED: ${{ job.status == 'failure' }}
+        run: |
+          # Back off a little after a failure so a broken setup can't spin.
+          [ "$FAILED" = "true" ] && sleep 300
+          gh workflow run collect.yml -R ${{ github.repository }} --ref ${{ github.ref_name }}
