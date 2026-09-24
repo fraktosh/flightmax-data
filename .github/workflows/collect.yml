@@ -77,8 +77,12 @@ jobs:
           git add -A
           git diff --cached --quiet && exit 0
           git commit --quiet -m "data: $(tail -n 1 runs.ndjson | cut -c1-120)"
-          git pull --quiet --rebase -X theirs
-          git push
+          # Retry so a concurrent push to main doesn't throw away the run's data.
+          for i in 1 2 3 4 5; do
+            git pull --quiet --rebase -X theirs && git push && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
 
       # Chain runs so collection and the status page don't depend on cron.
       # Set repo variable CHAIN_RUNS=false to stop the chain.
