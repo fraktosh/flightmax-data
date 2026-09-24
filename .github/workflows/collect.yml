@@ -2,15 +2,18 @@ name: Collect and train
 
 on:
   schedule:
-    - cron: "7,37 * * * *" # every 30 min
+    # GitHub drops or delays many scheduled runs, so this is only a backstop.
+    # Each successful run queues the next one itself (see "Queue next run").
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       minutes:
         description: Minutes to collect for
-        default: "170"
+        default: "50"
 
 permissions:
   contents: write
+  actions: write # lets a run dispatch the next one
 
 concurrency:
   group: collect
@@ -19,7 +22,7 @@ concurrency:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 190
+    timeout-minutes: 75
     steps:
       - name: Check out data
         uses: actions/checkout@v4
@@ -47,7 +50,7 @@ jobs:
       - name: Collect
         working-directory: app
         env:
-          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '170' }}
+          COLLECTOR_MINUTES: ${{ inputs.minutes || vars.COLLECTOR_MINUTES || '50' }}
         run: npx tsx collector/run.ts --store ../data
 
       - name: Train
@@ -76,3 +79,11 @@ jobs:
           git commit --quiet -m "data: $(tail -n 1 runs.ndjson | cut -c1-120)"
           git pull --quiet --rebase -X theirs
           git push
+
+      # Chain runs so collection and the status page don't depend on cron.
+      # Set repo variable CHAIN_RUNS=false to stop the chain.
+      - name: Queue next run
+        if: success() && vars.CHAIN_RUNS != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run collect.yml -R ${{ github.repository }} --ref ${{ github.ref_name }}
