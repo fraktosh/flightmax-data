@@ -7,7 +7,9 @@ set -euo pipefail
 cd /opt/collector/data
 git fetch -q origin main
 # Keep the checkout current too; Caddy serves it as the public dashboard.
-git reset -q --hard origin/main
+# Skip while a collector pass holds its lock: the pass updates the checkout
+# itself, and a reset would throw away its unpushed commit.
+flock -n /tmp/collector.lock git reset -q --hard origin/main || true
 wf=$(git rev-parse origin/main:.github/workflows/watchdog.yml)
 t=$(printf '100644 blob %s\twatchdog.yml\n' "$wf" | git mktree)
 t=$(printf '040000 tree %s\tworkflows\n' "$t" | git mktree)
