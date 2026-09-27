@@ -168,3 +168,4 @@
 {"startedAt":"2026-09-27T11:07:56.435Z","minutes":24.7,"ok":126,"empty":74,"errors":2,"blocked":false,"activeRoutes":29424,"delayMs":3750,"safeDelayMs":3125,"cycle":8,"cursor":28848,"workers":1}
 {"startedAt":"2026-09-27T11:33:20.761Z","minutes":24.6,"ok":133,"empty":51,"errors":1,"blocked":false,"activeRoutes":29424,"delayMs":3750,"safeDelayMs":3125,"cycle":8,"cursor":29033,"workers":1}
 {"startedAt":"2026-09-27T11:58:46.443Z","minutes":15.6,"ok":72,"empty":21,"errors":50,"blocked":true,"activeRoutes":26482,"delayMs":5625,"safeDelayMs":9375,"cycle":8,"cursor":26482,"workers":1}
+{"startedAt":"2026-09-27T12:14:57.651Z","minutes":24.6,"ok":133,"empty":0,"errors":18,"blocked":false,"activeRoutes":26482,"delayMs":9375,"safeDelayMs":9375,"cycle":9,"cursor":151,"workers":1}
