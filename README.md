@@ -2,31 +2,32 @@
 
 **🟢 Healthy**
 
-Updated 2026-10-09 16:37 UTC
+Updated 2026-10-09 17:03 UTC
 
 | | |
 |---|---|
-| Last run | 25 min ago: 74 ok, 0 empty, 0 errors |
-| Searches, last 24 h | 5,863 |
-| Searches, total | 172,786 |
+| Last run | 25 min ago: 91 ok, 0 empty, 4 errors |
+| Searches, last 24 h | 5,881 |
+| Searches, total | 172,877 |
 | Blocks, last 24 h | 0 |
 | Running for | 15.8 days |
 | Routes in rotation | 19,306 |
 | Routes with data | 25,040 |
 | Routes skipped (no fares) | 2,305 |
-| Pass progress | cycle 12, 14,019 / 19,306 |
+| Pass progress | cycle 12, 14,126 / 19,306 |
 | Request delay | 20.0 s |
 
 Searches per hour, last 24 h:
 
 ```
-▄█▅▅█▆▅▇▅▇▅▆█▄▃▄▃▃▅▃▃▄▃▃
+▆█▅▆█▅▅█▅█▅▆█▃▃▄▃▃▄▃▃▄▃▄
 ```
 
 ## Recent runs
 
 | Started (UTC) | Min | OK | Empty | Err | Blocked |
 |---|--:|--:|--:|--:|:-:|
+| 10-09 16:38 | 24.6 | 91 | 0 | 4 |  |
 | 10-09 16:13 | 24.6 | 74 | 0 | 0 |  |
 | 10-09 15:47 | 24.7 | 74 | 0 | 0 |  |
 | 10-09 15:22 | 24.5 | 77 | 0 | 0 |  |
@@ -38,4 +39,3 @@ Searches per hour, last 24 h:
 | 10-09 12:48 | 24.4 | 69 | 0 | 6 |  |
 | 10-09 12:23 | 24.4 | 69 | 1 | 1 |  |
 | 10-09 11:58 | 24.8 | 61 | 0 | 25 |  |
-| 10-09 11:32 | 24.7 | 66 | 0 | 10 |  |
