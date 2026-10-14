@@ -2,31 +2,32 @@
 
 **🟡 Recovering: blocked earlier today**
 
-Updated 2026-10-14 02:21 UTC
+Updated 2026-10-14 02:46 UTC
 
 | | |
 |---|---|
-| Last run | 25 min ago: 70 ok, 0 empty, 2 errors |
-| Searches, last 24 h | 2,321 |
-| Searches, total | 193,097 |
+| Last run | 25 min ago: 62 ok, 0 empty, 9 errors |
+| Searches, last 24 h | 2,351 |
+| Searches, total | 193,159 |
 | Blocks, last 24 h | 1 |
 | Running for | 20.2 days |
 | Routes in rotation | 6,732 |
 | Routes with data | 25,045 |
 | Routes skipped (no fares) | 2,311 |
-| Pass progress | cycle 14, 5,688 / 6,732 |
+| Pass progress | cycle 14, 5,759 / 6,732 |
 | Request delay | 20.0 s |
 
 Searches per hour, last 24 h:
 
 ```
-▄▃▅▃▃▄▃▃▃▃▄▃▄▄▅▅▇▆█▅▆█▅▆
+▄▃▄▃▃▄▃▃▃▃▄▃▆▄▅▄▇▆█▅▅█▆▆
 ```
 
 ## Recent runs
 
 | Started (UTC) | Min | OK | Empty | Err | Blocked |
 |---|--:|--:|--:|--:|:-:|
+| 10-14 02:21 | 24.5 | 62 | 0 | 9 |  |
 | 10-14 01:56 | 24.6 | 70 | 0 | 2 |  |
 | 10-14 01:31 | 24.4 | 64 | 0 | 7 |  |
 | 10-14 01:06 | 24.6 | 69 | 0 | 5 |  |
@@ -38,4 +39,3 @@ Searches per hour, last 24 h:
 | 10-13 22:34 | 24.5 | 63 | 0 | 8 |  |
 | 10-13 22:09 | 24.7 | 36 | 0 | 38 |  |
 | 10-13 21:43 | 24.6 | 68 | 0 | 3 |  |
-| 10-13 21:18 | 24.5 | 63 | 0 | 7 |  |
