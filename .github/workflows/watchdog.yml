@@ -1,0 +1,58 @@
+name: Watchdog
+
+# "Collect and train" chains itself (each run starts the next). If the chain
+# breaks, runs.ndjson stops getting new runs; once the newest is older than
+# STALE_MINUTES and no collect run is active, start one.
+# Safe to trigger as often as you like.
+#
+# GitHub drops many scheduled runs, so the Oracle VM (vps/heartbeat.*) also
+# force-pushes an empty commit to the `heartbeat` branch every 10 min, which
+# triggers this workflow. An external scheduler can also call its dispatch API.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  push:
+    branches: [heartbeat]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: true
+
+env:
+  STALE_MINUTES: 75
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Restart collect if the chain broke
+        if: vars.FALLBACK_RUNS != 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          last=$(gh api "repos/$REPO/contents/runs.ndjson" -H "Accept: application/vnd.github.raw" | tail -n 1 | jq -r .startedAt)
+          age=$(( ($(date -u +%s) - $(date -u -d "$last" +%s)) / 60 ))
+          echo "Newest run started $last ($age min ago)."
+          if [ "$age" -lt "$STALE_MINUTES" ]; then
+            echo "Collector is healthy; nothing to do."
+            exit 0
+          fi
+          active=0
+          for status in queued in_progress waiting pending requested; do
+            n=$(gh run list -R "$REPO" -w collect.yml -s "$status" -L 5 --json databaseId -q length)
+            active=$((active + n))
+          done
+          if [ "$active" -gt 0 ]; then
+            echo "Collect already active; nothing to do."
+          else
+            echo "Collector is stale; starting collect."
+            gh workflow run collect.yml -R "$REPO" --ref main
+          fi
