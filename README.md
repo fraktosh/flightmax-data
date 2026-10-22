@@ -2,25 +2,25 @@
 
 **🟡 Recovering: blocked earlier today**
 
-Updated 2026-10-22 11:44 UTC
+Updated 2026-10-22 12:09 UTC
 
 | | |
 |---|---|
-| Last run | 25 min ago: 112 ok, 0 empty, 13 errors |
-| Searches, last 24 h | 4,667 |
+| Last run | 50 min ago: 112 ok, 0 empty, 13 errors |
+| Searches, last 24 h | 4,574 |
 | Searches, total | 227,132 |
 | Blocks, last 24 h | 1 |
 | Running for | 28.6 days |
 | Routes in rotation | 8,945 |
 | Routes with data | 25,045 |
 | Routes skipped (no fares) | 2,322 |
-| Pass progress | cycle 21, 6,539 / 8,945 |
+| Pass progress | cycle 21, 6,581 / 8,945 |
 | Request delay | 20.0 s |
 
 Searches per hour, last 24 h:
 
 ```
-▄▇▂▃▃▄▃▄▃▃▄▃▃▄▃▄▄▅▇▄▄█▅▅
+▅▅▄▃▃▄▃▅▃▃▄▃▃▅▃▄▅▅▇▄▆█▅▃
 ```
 
 ## Recent runs
