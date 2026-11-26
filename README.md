@@ -2,11 +2,11 @@
 
 **🟠 Last run blocked by Google (backing off)**
 
-Updated 2026-11-26 08:07 UTC
+Updated 2026-11-26 08:10 UTC
 
 | | |
 |---|---|
-| Last run | 2 min ago: 0 ok, 0 empty, 8 errors |
+| Last run | 3 min ago: 0 ok, 0 empty, 8 errors |
 | Searches, last 24 h | 2,291 |
 | Searches, total | 363,044 |
 | Blocks, last 24 h | 13 |
@@ -20,14 +20,14 @@ Updated 2026-11-26 08:07 UTC
 Searches per hour, last 24 h:
 
 ```
-▇▆▇▅▄▄▄▂····▆▇▆▆▅█▅▇▆▆█▃
+▇▆▇▅▅▅▄▂····▆▇▆█▆▆▅▇▆▆█▃
 ```
 
 ## Recent runs
 
 | Started (UTC) | Min | OK | Empty | Err | Blocked |
 |---|--:|--:|--:|--:|:-:|
-| 11-26 08:05 | 2.4 | 0 | 0 | 8 | ⛔ |
+| 11-26 08:08 | 2.5 | 0 | 0 | 8 | ⛔ |
 | 11-26 08:01 | 2.7 | 1 | 0 | 8 | ⛔ |
 | 11-26 07:36 | 24.5 | 49 | 0 | 23 |  |
 | 11-26 07:31 | 4.6 | 3 | 0 | 11 | ⛔ |
