@@ -1,32 +1,33 @@
 # Fare collector status
 
-**🟠 Last run blocked by Google (backing off)**
+**🟡 Recovering: blocked earlier today**
 
-Updated 2026-11-27 22:52 UTC
+Updated 2026-11-27 23:17 UTC
 
 | | |
 |---|---|
-| Last run | 4 min ago: 7 ok, 1 empty, 4 errors |
-| Searches, last 24 h | 2,414 |
-| Searches, total | 367,038 |
+| Last run | 25 min ago: 42 ok, 18 empty, 11 errors |
+| Searches, last 24 h | 2,426 |
+| Searches, total | 367,098 |
 | Blocks, last 24 h | 46 |
-| Running for | 65.0 days |
+| Running for | 65.1 days |
 | Routes in rotation | 861 |
 | Routes with data | 25,051 |
 | Routes skipped (no fares) | 2,326 |
-| Pass progress | cycle 117, 811 / 861 |
+| Pass progress | cycle 118, 21 / 861 |
 | Request delay | 20.0 s |
 
 Searches per hour, last 24 h:
 
 ```
-▅▅▅▄▁▃▄▄█▅▅▅▄▆▃▃▅▆▄▄█▅▅▅
+▅▄▄▃▁▅▄▄█▅▄▅▄▆▃▅▄▆▅▅█▅▅▅
 ```
 
 ## Recent runs
 
 | Started (UTC) | Min | OK | Empty | Err | Blocked |
 |---|--:|--:|--:|--:|:-:|
+| 11-27 22:52 | 24.5 | 42 | 18 | 11 |  |
 | 11-27 22:47 | 4.3 | 7 | 1 | 4 | ⛔ |
 | 11-27 22:22 | 24.5 | 42 | 8 | 24 |  |
 | 11-27 21:57 | 24.4 | 47 | 1 | 24 |  |
@@ -38,4 +39,3 @@ Searches per hour, last 24 h:
 | 11-27 19:48 | 24.5 | 65 | 2 | 7 |  |
 | 11-27 19:22 | 24.5 | 62 | 0 | 10 |  |
 | 11-27 18:57 | 24.4 | 64 | 0 | 5 |  |
-| 11-27 18:32 | 24.7 | 39 | 0 | 32 |  |
