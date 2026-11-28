@@ -2,31 +2,32 @@
 
 **🟠 Last run blocked by Google (backing off)**
 
-Updated 2026-11-28 01:39 UTC
+Updated 2026-11-28 01:42 UTC
 
 | | |
 |---|---|
 | Last run | 2 min ago: 0 ok, 0 empty, 8 errors |
 | Searches, last 24 h | 2,475 |
 | Searches, total | 367,399 |
-| Blocks, last 24 h | 49 |
+| Blocks, last 24 h | 50 |
 | Running for | 65.2 days |
 | Routes in rotation | 861 |
 | Routes with data | 25,051 |
 | Routes skipped (no fares) | 2,326 |
-| Pass progress | cycle 118, 428 / 861 |
+| Pass progress | cycle 118, 436 / 861 |
 | Request delay | 20.0 s |
 
 Searches per hour, last 24 h:
 
 ```
-▄▂▃▅▅▅█▅▄▅▄▄▄▅▅▆▅▆█▅▅▇█▃
+▄▂▃▅▅▅█▅▄▅▄▅▄▅▅▆▅▆█▅▅▇█▃
 ```
 
 ## Recent runs
 
 | Started (UTC) | Min | OK | Empty | Err | Blocked |
 |---|--:|--:|--:|--:|:-:|
+| 11-28 01:40 | 2.4 | 0 | 0 | 8 | ⛔ |
 | 11-28 01:37 | 2.4 | 0 | 0 | 8 | ⛔ |
 | 11-28 01:34 | 2.3 | 0 | 0 | 8 | ⛔ |
 | 11-28 01:31 | 2.4 | 0 | 0 | 8 | ⛔ |
@@ -38,4 +39,3 @@ Searches per hour, last 24 h:
 | 11-27 23:22 | 24.6 | 68 | 0 | 4 |  |
 | 11-27 23:17 | 4 | 7 | 0 | 4 | ⛔ |
 | 11-27 22:52 | 24.5 | 42 | 18 | 11 |  |
-| 11-27 22:47 | 4.3 | 7 | 1 | 4 | ⛔ |
