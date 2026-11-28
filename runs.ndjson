@@ -4011,3 +4011,4 @@
 {"startedAt":"2026-11-28T18:46:44.959Z","minutes":24.5,"ok":46,"empty":4,"errors":20,"blocked":false,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":121,"cursor":790,"workers":1}
 {"startedAt":"2026-11-28T19:11:53.805Z","minutes":24.7,"ok":46,"empty":25,"errors":2,"blocked":false,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":122,"cursor":2,"workers":1}
 {"startedAt":"2026-11-28T19:37:15.183Z","minutes":25,"ok":59,"empty":0,"errors":6,"blocked":false,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":122,"cursor":67,"workers":1}
+{"startedAt":"2026-11-28T20:02:54.205Z","minutes":4.3,"ok":10,"empty":0,"errors":2,"blocked":true,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":122,"cursor":80,"workers":1}
