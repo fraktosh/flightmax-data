@@ -3970,3 +3970,4 @@
 {"startedAt":"2026-11-28T06:16:09.806Z","minutes":2.5,"ok":0,"empty":0,"errors":8,"blocked":true,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":119,"cursor":313,"workers":1}
 {"startedAt":"2026-11-28T06:19:14.520Z","minutes":2.4,"ok":0,"empty":0,"errors":8,"blocked":true,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":119,"cursor":321,"workers":1}
 {"startedAt":"2026-11-28T06:22:17.350Z","minutes":2.3,"ok":0,"empty":0,"errors":8,"blocked":true,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":119,"cursor":329,"workers":1}
+{"startedAt":"2026-11-28T06:25:16.630Z","minutes":2.3,"ok":0,"empty":0,"errors":8,"blocked":true,"activeRoutes":861,"delayMs":20000,"safeDelayMs":20000,"cycle":119,"cursor":337,"workers":1}
